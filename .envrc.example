@@ -1,0 +1,16 @@
+# shellcheck shell=bash
+# This file contains sensitive information; it should not be committed to the repository!
+##
+export LIB_HEADSPACE_USERNAME="YourEmailAddressHere"
+export LIB_HEADSPACE_PASSWORD="ThePasswordOnMyLuggageIs12345"
+
+# Depending on how you have your local environment set up, you may want to uncomment below
+# Make import path work well from inside demos dir
+# shellcheck disable=SC2155
+# If $PYTHONPATH is already set, append to it, otherwise set it
+##
+#if [ -z "$PYTHONPATH" ]; then
+#    export PYTHONPATH="$(pwd)"
+#else
+#    export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+#fi

@@ -1,0 +1,34 @@
+{
+    "folders": [
+        {
+            "path": ".."
+        }
+    ],
+    "settings": {
+        "ruff.nativeServer": "on",
+        "[python]": {
+            "editor.formatOnSave": true,
+            "editor.defaultFormatter": "charliermarsh.ruff",
+            "editor.codeActionsOnSave": {
+                "source.fixAll": "explicit",
+                "source.organizeImports": "explicit"
+            }
+        },
+        "cSpell.words": [
+            "aioresponse",
+            "aioresponses",
+            "autolabeler",
+            "commitish",
+            "Compatability",
+            "excinfo",
+            "headspace",
+            "HEADSPACE",
+            "HSUSER",
+            "pycodestyle",
+            "pypa",
+            "Pytest",
+            "PYTHONPATH",
+            "shellcheck"
+        ]
+    }
+}

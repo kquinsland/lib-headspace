@@ -1,0 +1,40 @@
+[project]
+name = "lib-headspace"
+description = "Basic API client for Headspace"
+readme = "readme.md"
+authors = [{ name = "Karl Quinsland" }]
+# For $reasons that are hard to wrap my head around, there is still no good way to do this across
+#   most python ecosystem tools.
+# This is the "official" hack that's endorsed by the UV team.
+# See: https://github.com/astral-sh/uv/issues/8714#issuecomment-2449005264
+version = "0.0.0"
+
+
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp>=3.11.7",
+    "aioresponses>=0.7.7",
+    "brotlipy>=0.7.0",
+    "pyjwt>=2.10.0",
+    "structlog>=24.4.0",
+]
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "session"
+asyncio_mode = "auto"
+
+[dependency-groups]
+dev = [
+    "pytest-asyncio>=0.24.0",
+    "pytest>=8.3.3",
+    "ruff>=0.7.4",
+    "aioresponses>=0.7.7",
+    "pre-commit>=4.0.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

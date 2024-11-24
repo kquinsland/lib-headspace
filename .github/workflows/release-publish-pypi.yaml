@@ -1,0 +1,75 @@
+---
+# See docs/release.md for more.
+name: Upload Release to PyPI
+
+# TODO: add workflow_dispatch to trigger manually
+on:
+  release:
+    types: [published]
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci-cd.yaml
+  release-package:
+    name: Build and Release to PyPI
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      # id-token is the scope of the OIDC connection
+      id-token: write
+      # allow reading the repo for checkout
+      contents: read
+
+    env:
+      # This is needed to make sure that the tests can find the package.
+      PYTHONPATH: .
+
+    steps:
+      - name: Checkout repository
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Install uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+        # TODO: it may be possible to use uv directly and not need
+        # the pypa action
+      - name: Build package
+        id: build-for-dist
+        run: |
+          sed -i -e "s/0.0.0/${GITHUB_REF#refs/*/}/" pyproject.toml
+          # Dump verbose output to help debug if needed
+          # TODO: only --wheel? Is there a value in --sdist?
+          uv build --out-dir dist --verbose
+          # uv publish --trusted-publishing=automatic
+
+      - name: debug
+        id: debug
+        run: |
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          echo "Here is the content of \$PWD ($PWD):"
+          ls -al
+
+          echo "here is the content of the dist directory:"
+          ls -al dist
+
+          echo "here is the content of pyproject.toml (to make sure sed worked)"
+          cat pyproject.toml
+
+      # We use this instead of the `uv publish` command because we want to leverage the
+      #   no credentials feature of the `pypa/gh-action-pypi-publish` action via the OIDC connection.
+      ##
+      - name: Publish package distributions to PyPI
+        id: publish-to-pypi
+        # TODO: needed?
+        # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
