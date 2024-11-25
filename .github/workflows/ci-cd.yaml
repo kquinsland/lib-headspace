@@ -30,6 +30,7 @@ jobs:
               uses: astral-sh/setup-uv@v4
               with:
                   enable-cache: true
+                  ignore-nothing-to-cache: true
                   cache-dependency-glob: "uv.lock"
 
             - name: Set up Python
@@ -74,6 +75,7 @@ jobs:
               uses: astral-sh/setup-uv@v4
               with:
                   enable-cache: true
+                  ignore-nothing-to-cache: true
                   cache-dependency-glob: "uv.lock"
 
             - name: Set up Python
