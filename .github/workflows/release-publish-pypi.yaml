@@ -37,39 +37,14 @@ jobs:
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
+          ignore-nothing-to-cache: true
           cache-dependency-glob: "uv.lock"
 
-        # TODO: it may be possible to use uv directly and not need
-        # the pypa action
-      - name: Build package
-        id: build-for-dist
+      - name: Build and publish package to PyPI
+        id: build-for-dist-to-pypi
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         run: |
           sed -i -e "s/0.0.0/${GITHUB_REF#refs/*/}/" pyproject.toml
           # Dump verbose output to help debug if needed
-          # TODO: only --wheel? Is there a value in --sdist?
           uv build --out-dir dist --verbose
-          # uv publish --trusted-publishing=automatic
-
-      - name: debug
-        id: debug
-        run: |
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          echo "Here is the content of \$PWD ($PWD):"
-          ls -al
-
-          echo "here is the content of the dist directory:"
-          ls -al dist
-
-          echo "here is the content of pyproject.toml (to make sure sed worked)"
-          cat pyproject.toml
-
-      # We use this instead of the `uv publish` command because we want to leverage the
-      #   no credentials feature of the `pypa/gh-action-pypi-publish` action via the OIDC connection.
-      ##
-      - name: Publish package distributions to PyPI
-        id: publish-to-pypi
-        # TODO: needed?
-        # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          print-hash: true
+          uv publish --trusted-publishing=automatic
